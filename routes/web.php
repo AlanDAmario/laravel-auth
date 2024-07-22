@@ -47,8 +47,8 @@ Route::middleware('auth', 'verified')
 
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('projects', ProjectController::class)->parameters(['projects' => 'project:slug']);
         Route::get('/welcome', [DashboardController::class, 'welcome'])->name('welcome');
-        Route::resource('projects', ProjectController::class);
     });
 
 

@@ -14,7 +14,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return view('admin.project.index');
+        // Recupera tutti i progetti dal database
+        $projects = Project::all();
+
+        // Passa i progetti alla vista
+        return view('admin.project.index', compact('projects')); //COMPACT CREA UN MODELLO DI ARRAY ASSOCIATIVO
     }
 
     /**
@@ -22,7 +26,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.project.create');
     }
 
     /**
@@ -38,7 +42,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        //  $project = Project::where('slug', $slug)->first();
+        // // Passa il progetto specifico alla vista
+         return view('admin.project.show', compact('project'));
+   
     }
 
     /**
