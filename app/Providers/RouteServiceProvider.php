@@ -16,8 +16,8 @@ class RouteServiceProvider extends ServiceProvider
      * Typically, users are redirected here after authentication.
      *
      * @var string
-     */
-    public const HOME = '/admin';
+     */ //COSTANTE DA CAMBIARE PER FDEFINIRE L HOME PAGE RISERVATA DOPO L ACCESSO, DI DEFUALT è '\DASHBOARD'
+    public const HOME = '/admin/welcome';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

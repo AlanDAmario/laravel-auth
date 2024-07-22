@@ -3,6 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
+            <h1>Benvenuto nella dashboard amministrativa</h1>
             <div class="col mt-4">
                 <div class="card">
                     <div class="card-header">{{ __('Dashboard') }}</div>
