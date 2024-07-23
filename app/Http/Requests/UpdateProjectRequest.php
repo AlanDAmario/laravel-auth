@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class UpdateProjectRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateProjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,9 @@ class UpdateProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            //PROJECTS è IL NOME DELA TABELLA CHE CI VIENE CHIESTO DOPO UNIQUE
+             'title' => ['required', ValidationRule::unique('projects')->ignore($this->project), 'max:60'],
+             'description' => ['nullable','string','max:255'],
         ];
     }
 }

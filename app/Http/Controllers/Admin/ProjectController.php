@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Illuminate\Support\Str; //importazione sluge
 
 class ProjectController extends Controller
 {
@@ -34,7 +35,22 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $data = $request->validated();
+        // $slug =Str::of($data['title'])->slug('-');
+        //VERSIONE SLUGGIZATA DEL TITOLO
+        $data['slug'] = Str::of($data['title'])->slug('-');
+
+
+        // Salva il progetto nel database
+        $project = new Project();
+
+        //è un metodo conveniente e sicuro per assegnare valori agli attributi di un modello in Laravel, rispettando le restrizioni definite dalla proprietà $fillable.
+        $project->fill($data);
+
+        $project->save();
+
+        // Reindirizzamento alla pagina del progetto appena creato
+        return redirect()->route('admin.projects.show', $project->slug)->with('success', 'Project created successfully');
     }
 
     /**
@@ -44,8 +60,7 @@ class ProjectController extends Controller
     {
         //  $project = Project::where('slug', $slug)->first();
         // // Passa il progetto specifico alla vista
-         return view('admin.project.show', compact('project'));
-   
+        return view('admin.project.show', compact('project'));
     }
 
     /**
@@ -53,7 +68,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return view('admin.project.edit', compact('project'));
     }
 
     /**
@@ -61,7 +76,16 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $data = $request->validated();
+        // $slug = Str::of($data['title'])->slug('-');
+        // VERSIONE SLUGGIZATA DEL TITOLO
+        $data['slug'] = Str::of($data['title'])->slug('-');
+
+        // Aggiorna i dati del progetto nel database
+        $project->update($data);
+
+        // Reindirizzamento alla pagina del progetto appena aggiornato
+        return redirect()->route('admin.projects.show', $project->slug)->with('success', 'Project updated successfully');
     }
 
     /**
@@ -69,6 +93,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }
 }

@@ -11,7 +11,8 @@ class StoreProjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        //cambiare sempre in true per autorizzare la request dallo store
+        return true;
     }
 
     /**
@@ -21,8 +22,12 @@ class StoreProjectRequest extends FormRequest
      */
     public function rules(): array
     {
+        //aggiungere le regole di validazione per il form
         return [
-            //
+            'title' => ['required','string','min:5','max:60'],
+            'description' => ['nullable', 'string','min:10','max:500']
+            
+            
         ];
     }
 }
