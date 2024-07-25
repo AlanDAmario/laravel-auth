@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str; //importazione sluge
 
 class ProjectController extends Controller
@@ -36,17 +37,24 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $data = $request->validated();
+
+        //GESTIONE SLUG
         // $slug =Str::of($data['title'])->slug('-');
         //VERSIONE SLUGGIZATA DEL TITOLO
         $data['slug'] = Str::of($data['title'])->slug('-');
 
+        //GESTIONE IMMAGINE
+        $img_path = $request->hasFile('cover_image') ? Storage::put('uploads', $data['cover_image']) : NULL;
 
         // Salva il progetto nel database
         $project = new Project();
 
+        $project->cover_image = $img_path; //aggiunge il path dell'immagine al progetto
+
         //è un metodo conveniente e sicuro per assegnare valori agli attributi di un modello in Laravel, rispettando le restrizioni definite dalla proprietà $fillable.
         $project->fill($data);
 
+        //DOPO IL SAVE VERRà ASSEGNATO L ID 
         $project->save();
 
         // Reindirizzamento alla pagina del progetto appena creato
@@ -81,6 +89,20 @@ class ProjectController extends Controller
         // VERSIONE SLUGGIZATA DEL TITOLO
         $data['slug'] = Str::of($data['title'])->slug('-');
 
+        // Controllo se un'immagine è stata caricata
+        if ($request->hasFile('cover_image')) {
+            // Elimina l'immagine esistente se presente
+            if ($project->cover_image) {
+                Storage::delete($project->cover_image);
+            }
+
+            // Salva la nuova immagine
+            $data['cover_image'] = $request->file('cover_image')->store('cover_images');
+        } else {
+            // Mantieni il vecchio percorso dell'immagine se non viene caricata una nuova immagine
+            $data['cover_image'] = $project->cover_image;
+        }
+
         // Aggiorna i dati del progetto nel database
         $project->update($data);
 
@@ -93,6 +115,11 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        // Elimina l'immagine dal filesystem se presente nel database
+        if ($project->cover_image) {
+            Storage::delete($project->cover_image);
+        }
+        // Elimina il progetto dal database
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }

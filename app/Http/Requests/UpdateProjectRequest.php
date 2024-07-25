@@ -24,9 +24,10 @@ class UpdateProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //PROJECTS è IL NOME DELA TABELLA CHE CI VIENE CHIESTO DOPO UNIQUE
-             'title' => ['required', ValidationRule::unique('projects')->ignore($this->project), 'max:60'],
-             'description' => ['nullable','string','max:255'],
+            //APPLICARE LA VALIDATION RULE PER VALIDARE CHE IL TITOLO SIA UNICO, PROJECTS è IL NOME DELA TABELLA CHE CI VIENE CHIESTO DOPO UNIQUE
+            'title' => ['required', ValidationRule::unique('projects')->ignore($this->project), 'max:60'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'cover_image' => ['nullable', 'image', 'max:2048']
         ];
     }
 }
